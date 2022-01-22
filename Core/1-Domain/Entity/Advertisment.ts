@@ -22,31 +22,32 @@ export class Advertisment extends BaseEntity
     public description!: Description;
     public price!: Price;
     public status!: AdvertismentStatus;
-    constructor ({ id, ownerId }: { id: string, ownerId: UserId; })
-    {
-        super(id);
-        this.handleEvent(new AdvertismentCreated(id, ownerId.props.value));
-    }
+
     public setTitle(title: Title): void
     {
         this.handleEvent(new AdvertismentTitleChanged(this.id, title.props.value));
     }
+    
     public setDescription(description: Description): void
     {
         this.handleEvent(new AdvertismentDescriptionUpdated(this.id, description.props.value));
     }
+
     public setPrice(price: Price): void
     {
         this.handleEvent(new AdvertismentPriceUpdated(this.id, price.props.value.props.value));
     }
+
     public sendForReview(): void
     {
         this.handleEvent(new AdvertismentSentForReview(this.id));
     }
+
     public approve(approver: UserId)
     {
         this.handleEvent(new AdvertismentApproved(this.id, approver.props.value));
     }
+
     protected validateInvariants(): void
     {
         const isValid =
@@ -70,6 +71,7 @@ export class Advertisment extends BaseEntity
             throw new Error("امکان تغییر وضعیت وجود ندارد");
         }
     }
+
     protected setStateByEvent(event: IEvent): void
     {
         if (event instanceof AdvertismentCreated)
@@ -98,5 +100,11 @@ export class Advertisment extends BaseEntity
             this.approvedBy = new UserId(event.approver);
             this.status = AdvertismentStatus.Published;
         }
+    }
+
+    constructor ({ id, ownerId }: { id: string, ownerId: UserId; })
+    {
+        super(id);
+        this.handleEvent(new AdvertismentCreated(id, ownerId.props.value));
     }
 }
